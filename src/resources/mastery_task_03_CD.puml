@@ -42,14 +42,14 @@ class ShipmentCost {
 
 class Packaging {
   -material: Material
-  -length: BigDecimal
-  -width: BigDecimal
-  -height: BigDecimal
   +getMass(): BigDecimal
   +canFitItem(Item): boolean
 }
 
 class Box {
+  -length: BigDecimal
+  -width: BigDecimal
+  -height: BigDecimal
   +getMass(): BigDecimal
   +canFitItem(Item): boolean
 }
