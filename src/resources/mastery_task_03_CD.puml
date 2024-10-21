@@ -54,7 +54,7 @@ class Box {
   +canFitItem(Item): boolean
 }
 
-class Polybag {
+class PolyBag {
   -volume: BigDecimal
   +getMass(): BigDecimal
   +canFitItem(Item): boolean
@@ -85,7 +85,7 @@ FcPackagingOption o-- FulfillmentCenter
 FcPackagingOption o-- Packaging
 Packaging *- Material
 Packaging <|-- Box
-Packaging <|-- Polybag
+Packaging <|-- PolyBag
 ShipmentOption o-- Item
 ShipmentOption o-- Packaging
 ShipmentOption o-- FulfillmentCenter
