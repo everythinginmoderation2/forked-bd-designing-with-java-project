@@ -9,8 +9,8 @@ import com.amazon.ata.types.Item;
 import com.amazon.ata.types.Packaging;
 import com.amazon.ata.types.ShipmentOption;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 
 /**
  * Access data for which packaging is available at which fulfillment center.
@@ -19,14 +19,32 @@ public class PackagingDAO {
     /**
      * A list of fulfillment centers with a packaging options they provide.
      */
-    private List<FcPackagingOption> fcPackagingOptions;
+    private Map<FulfillmentCenter, Set<FcPackagingOption>> fcPackagingOptions = new HashMap<>();
 
     /**
      * Instantiates a PackagingDAO object.
      * @param datastore Where to pull the data from for fulfillment center/packaging available mappings.
      */
     public PackagingDAO(PackagingDatastore datastore) {
-        this.fcPackagingOptions =  new ArrayList<>(datastore.getFcPackagingOptions());
+        //Packaging options list, created in datastore,
+        // used to store pairs of fulfillment centers to the packaging options they support
+        List<FcPackagingOption> packagingOptionList = datastore.getFcPackagingOptions();
+
+
+        //Iterates through packaging options list to retrieve fcPackagingOption that will be stored in
+        for (FcPackagingOption fcPackagingOption : packagingOptionList) {
+
+            //Key and Value variables prepared solely to store temp values to keep this code legible
+            FulfillmentCenter fulfillmentCenterKey = fcPackagingOption.getFulfillmentCenter(); //Contains fcCode used in HashMap fcPackagingOptions
+
+            if (!fcPackagingOptions.containsKey(fulfillmentCenterKey)) {
+                Set<FcPackagingOption> hashSet = new HashSet<>(); //value contains hashset of fcpackingoptions
+                fcPackagingOptions.put(fulfillmentCenterKey, hashSet);
+            }
+
+            fcPackagingOptions.get(fulfillmentCenterKey).add(fcPackagingOption);
+        }
+
     }
 
     /**
@@ -46,7 +64,8 @@ public class PackagingDAO {
         // Check all FcPackagingOptions for a suitable Packaging in the given FulfillmentCenter
         List<ShipmentOption> result = new ArrayList<>();
         boolean fcFound = false;
-        for (FcPackagingOption fcPackagingOption : fcPackagingOptions) {
+        if (!fcPackagingOptions.containsKey(fulfillmentCenter)) throw new UnknownFulfillmentCenterException();
+        for (FcPackagingOption fcPackagingOption : fcPackagingOptions.get(fulfillmentCenter)) {
             Packaging packaging = fcPackagingOption.getPackaging();
             String fcCode = fcPackagingOption.getFulfillmentCenter().getFcCode();
 
