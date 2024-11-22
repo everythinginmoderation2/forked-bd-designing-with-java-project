@@ -92,6 +92,23 @@ class PackagingDAOTest {
                 + "for each.");
     }
 
+    @Test
+    public void findShipmentOptions_twoPackagingIdenticalItems_onePackagingOption() throws Exception {
+        // GIVEN
+        packagingDAO = new PackagingDAO(datastore);
+
+        // WHEN
+        List<ShipmentOption> shipmentOptions = packagingDAO.findShipmentOptions(smallItem, iad2);
+        System.out.println(shipmentOptions);
+
+        // THEN
+        assertEquals(3, shipmentOptions.size(),
+                "When fulfillment center has multiple packaging options that are identical, " +
+                        "return only that one ShipmentOption with no duplicates.");
+    }
+
+
+
     private Item createItem(String length, String width, String height) {
         return Item.builder()
                 .withAsin("B00TEST")

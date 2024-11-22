@@ -39,8 +39,9 @@ public class PackagingDAO {
 
             if (!fcPackagingOptions.containsKey(fulfillmentCenterKey)) {
                 Set<FcPackagingOption> hashSet = new HashSet<>(); //value contains hashset of fcpackingoptions
-                fcPackagingOptions.put(fulfillmentCenterKey, hashSet);
+                fcPackagingOptions.putIfAbsent(fulfillmentCenterKey, hashSet);
             }
+
 
             fcPackagingOptions.get(fulfillmentCenterKey).add(fcPackagingOption);
         }
@@ -67,9 +68,10 @@ public class PackagingDAO {
         if (!fcPackagingOptions.containsKey(fulfillmentCenter)) throw new UnknownFulfillmentCenterException();
         for (FcPackagingOption fcPackagingOption : fcPackagingOptions.get(fulfillmentCenter)) {
             Packaging packaging = fcPackagingOption.getPackaging();
-            String fcCode = fcPackagingOption.getFulfillmentCenter().getFcCode();
+//            String fcCode = fcPackagingOption.getFulfillmentCenter().getFcCode();
 
-            if (fcCode.equals(fulfillmentCenter.getFcCode())) {
+//            fcCode.equals(fulfillmentCenter.getFcCode())
+            if (fcPackagingOption.getFulfillmentCenter().equals(fulfillmentCenter)) {
                 fcFound = true;
                 if (packaging.canFitItem(item)) {
                     result.add(ShipmentOption.builder()
